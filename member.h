@@ -14,16 +14,22 @@
  */
 
 
+#include <mysql.h>
+
 class Member_DB{
 
 private:
-	
+	MYSQL* conn;
 	/*
-	 * Inserts
+	 * Inserts entered data into database
 	 */
-	void new_member();
+	
 public:
 	Member_DB();
+	~Member_DB();
+	void insertMember();
+	void showMembers();
+
 };
 
 

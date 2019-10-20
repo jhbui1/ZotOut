@@ -13,13 +13,14 @@
 using namespace	std;
 
 int main(int argc, char** argv) {
-	Member_DB mem_db();
+	Member_DB mem_db;
 	for (;;) {
 		cout << "Welcome to Zotout!" << endl;
 		cout << "\t1:Check-In:" << endl;
 		cout << "\t2:Add Member" << endl;
 		cout << "\t3:Update/View Member file" << endl;
-		cout << "\t4:Update Equipment Status:" << endl;
+		cout << "\t4:Show All Members" << endl;
+		cout << "\t5:Update Equipment Status" << endl;
 		//cout<<"\t4:"<<endl;
 
 		cout << "Enter the number for your option: " << endl;
@@ -30,6 +31,12 @@ int main(int argc, char** argv) {
 		case 1:
 			break;
 		case 2:
+			mem_db.insertMember();
+			break;
+		case 3:
+			break;
+		case 4:
+			mem_db.showMembers();
 			break;
 
 		}

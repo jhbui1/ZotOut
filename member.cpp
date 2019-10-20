@@ -36,7 +36,7 @@ void Member_DB::insertMember() {
 	cout << "Enter gender: " << endl;
 	cin >> gender;
 	char buff[300];
-	sprintf_s(buff, "INSERT INTO gym_member(first_name, last_name, email, rn_date, sex) VALUE('%s', '%s', '%s', '%s', '%c'", fn, ln, email, date, gender);
+	sprintf_s(buff, "INSERT INTO gym_member(first_name, last_name, email, rn_date, sex) VALUE('%s', '%s', '%s', '%s', '%c');", fn, ln, email, date, gender);
 	mysql_query(this->conn,buff);
 }
 

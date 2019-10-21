@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
 			mem_db.insertMember();
 			break;
 		case 3:
+			mem_db.updateMember();
 			break;
 		case 4:
 			mem_db.showMembers();

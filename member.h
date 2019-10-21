@@ -15,19 +15,46 @@
 
 
 #include <mysql.h>
+#include <array>
+#include <string>
 
-class Member_DB{
+#include "db_man.h"
+
+using namespace std;
+
+class Member_DB :public DB_MANAGER {
 
 private:
-	MYSQL* conn;
+	array<string,5> column_names{"First name", "Last name", "E-mail","Renewal date", "Gender"};
+	array<string,5> column_names_db{ "first_name","last_name","email","rn_date","sex" };
+	
+	/*
+	Asks if user wants to update given attr
+	returns query portion of list of attributes to update and values to update with
+*/
+	string updateMemberPrompt();
+	
+public:
+	/**
+		Checks if relevant tables exist.
+		Creates otherwise.
+	*/
+	Member_DB();
+	
 	/*
 	 * Inserts entered data into database
 	 */
-	
-public:
-	Member_DB();
-	~Member_DB();
 	void insertMember();
+	
+	/*
+		Searches for corresponding record file based on selected parameters 
+	*/
+	void updateMember();
+	
+	/*
+		Shows all members in database
+	*/
+
 	void showMembers();
 
 };

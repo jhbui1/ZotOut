@@ -1,6 +1,7 @@
 #ifndef EMPLOYEE_H
 #define EMPLOYEE_H
 
+#include <string>
 #include <mysql.h>
 
 
@@ -8,6 +9,8 @@
 	Maintins tables for employee information and 
 	has functions to evaluate employee performance. 
 */
+
+using namespace std;
 
 class Employee_DB{
 
@@ -26,10 +29,31 @@ public:
 	@param conn, a mysql connection maintained by a DB manager object
 	*/
 	Employee_DB(MYSQL* conn);
+
+
 	/*
-	
+		displays employee db related options
 	*/
 
+	void show_ops();
+
+	/*
+	shows all employees
+	*/
+
+	void showEmployees();
+
+	/*
+	Prompts use to add employee
+
+	*/
+	void addEmployee();
+
+	/*
+		Adds a relation between member and employee
+		@param mem_id member to be related to
+	*/
+	void addMemEmp(int mem_id);
 	
 	/*
 		Searches the employee-member database for the employee with
@@ -38,8 +62,7 @@ public:
 	
 	*/
 	
-
-
+	string  mostValuableEmp();
 };
 
 #endif

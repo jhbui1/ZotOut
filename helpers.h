@@ -2,6 +2,7 @@
 #define HELPERS_H
 
 #include <string>
+#include <mysql.h>
 
 using namespace std;
 
@@ -18,6 +19,11 @@ void printSep(int n);
 */
 string removeSpaces(string str);
 
+/*
+	Provides error checking for a query
+	@param s,query string 
+*/
 
+MYSQL_RES* MYSQL_QUERY(MYSQL* conn, string s);
 
 #endif

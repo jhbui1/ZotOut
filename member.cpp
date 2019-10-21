@@ -5,7 +5,7 @@
  *      Author: jbui4
  */
 
-#include <string>
+
 #include <iostream>
 #include <stdio.h>
 #include <array>

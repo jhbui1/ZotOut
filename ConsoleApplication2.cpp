@@ -3,8 +3,10 @@
 #include <iostream>
 #include <stdlib.h>
 #include <mysql.h>
+#include <string>
 
 #include "db_man.h"
+//#include "db_man.cpp"
 #include "helpers.h"
 #include "member.h"
 #include "employee.h"
@@ -22,10 +24,11 @@ int main(int argc, char** argv) {
 		cout << "\t3:Update/View Member file" << endl;
 		cout << "\t4:Show All Members" << endl;
 		cout << "\t5:Update Equipment Status" << endl;
-		//cout<<"\t4:"<<endl;
+		cout << "\t6:Employee Options" << endl;
+		
 
 		cout << "Enter the number for your option: " << endl;
-		int n,new_id;
+		int n,new_id=-1;
 		cin >> n;
 		
 		switch (n) {
@@ -33,6 +36,8 @@ int main(int argc, char** argv) {
 			break;
 		case 2: //Add member
 			 new_id = mem_db.insertMember();
+			 if (new_id == -1) break;
+			 emp_db.addMemEmp(new_id);
 			//ask for employee id determine added member (last row) add to emp-mem relation
 			break;
 		case 3:
@@ -41,7 +46,11 @@ int main(int argc, char** argv) {
 		case 4:
 			mem_db.showMembers();
 			break;
-
+		case 5: //equipment
+			break;
+		case 6: //show employee menu
+			printSep(5);
+			emp_db.show_ops();
 		}
 
 

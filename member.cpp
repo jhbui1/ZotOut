@@ -16,7 +16,8 @@
 
 using namespace std;
 
-Member_DB::Member_DB(){
+Member_DB::Member_DB(MYSQL* conn){
+	this->conn = conn;
 	mysql_query(this->conn, "CREATE TABLE IF NOT EXISTS gym_member( \
 							member_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,\
 							first_name VARCHAR(30) NOT NULL,\
@@ -43,7 +44,25 @@ void insertMemberPrompt(string* fn,string *ln,string * email, string* date, char
 
 }
 
-void Member_DB::insertMember() {
+int Member_DB::lastRow() {
+	MYSQL_RES* res;
+	MYSQL_ROW row;
+
+	string query = "SELECT * FROM gym_member where member_id = (SELECT MAX(member_id) from gym_member);";
+	const char* q = query.c_str();
+	int qstate = mysql_query(conn, q);
+	if (!qstate) {
+		res = mysql_store_result(conn);
+		row = mysql_fetch_row(res);
+			return atoi(row[0]);
+
+	}
+	else {
+		cout << "Query failed: " << mysql_error(conn) << endl;
+	}
+}
+
+int Member_DB::insertMember() {
 	string fn,ln,email,date;
 	char gender;
 	char buff[300];
@@ -53,7 +72,7 @@ void Member_DB::insertMember() {
 	sprintf_s(buff, "INSERT INTO gym_member(first_name, last_name, email, rn_date, sex) VALUE('%s', '%s', '%s', '%s', '%c');", fn, ln, email, date, gender);
 	mysql_query(this->conn,buff);
 	this->showMembers();
-	
+	return this->lastRow();
 }
 
 

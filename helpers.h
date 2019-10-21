@@ -12,6 +12,12 @@ using namespace std;
  * @param n number of new lines to print
  */
 void printSep(int n);
+/*
+	Removes spaces from str
+	@param str, string to remove spaces from
+*/
 string removeSpaces(string str);
+
+
 
 #endif

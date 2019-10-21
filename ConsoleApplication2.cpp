@@ -1,19 +1,20 @@
-// ConsoleApplication2.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 
 
 #include <iostream>
 #include <stdlib.h>
 #include <mysql.h>
 
-
+#include "db_man.h"
 #include "helpers.h"
 #include "member.h"
+#include "employee.h"
 
 using namespace	std;
 
 int main(int argc, char** argv) {
-	Member_DB mem_db;
+	DB_MANAGER db_man;
+	Member_DB mem_db(db_man.conn);
+	Employee_DB emp_db(db_man.conn);
 	for (;;) {
 		cout << "Welcome to Zotout!" << endl;
 		cout << "\t1:Check-In:" << endl;
@@ -24,14 +25,15 @@ int main(int argc, char** argv) {
 		//cout<<"\t4:"<<endl;
 
 		cout << "Enter the number for your option: " << endl;
-		int n;
+		int n,new_id;
 		cin >> n;
-
+		
 		switch (n) {
 		case 1:
 			break;
-		case 2:
-			mem_db.insertMember();
+		case 2: //Add member
+			 new_id = mem_db.insertMember();
+			//ask for employee id determine added member (last row) add to emp-mem relation
 			break;
 		case 3:
 			mem_db.updateMember();

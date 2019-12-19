@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <array>
 #include <ctype.h>
-
 #include "member.h"
 #include "helpers.h"
 
@@ -26,6 +25,35 @@ Member_DB::Member_DB(MYSQL* conn){
 							rn_date DATE NOT NULL,\
 							sex ENUM('M','F') NOT NULL);");
 }
+
+void Member_DB::showOps(Employee_DB& emp_db) {
+	cout << "\t1:Add Member" << endl;
+	cout << "\t2:Update/View Member file" << endl;
+	cout << "\t3:Show All Members" << endl;
+	cout << "\t4:Delete Member" << endl;
+	cout << "Enter the number for your option: " << endl;
+
+	int n,new_id = -1;
+	cin >> n;
+	switch (n) {
+		case 1:	
+			new_id = this->insertMember();
+			if (new_id == -1) break;
+			emp_db.addMemEmp(new_id);
+			break;
+		case 2:
+			this->updateMember();
+			break;
+		case 3:
+			this->showMembers();
+			break;
+		case 4:
+			this->deleteMem();
+			break;
+
+	}
+}
+
 /*
 	Takes pointers to strings that store values to be inserted into member db
 */
@@ -44,11 +72,15 @@ void insertMemberPrompt(string* fn,string *ln,string * email, string* date, char
 
 }
 
+/*
+	returns max id
+
+*/
 int Member_DB::lastRow() {
 	MYSQL_RES* res;
 	MYSQL_ROW row;
 
-	string query = "SELECT * FROM gym_member where member_id = (SELECT MAX(member_id) from gym_member);";
+	string query = "SELECT MAX(member_id) FROM gym_member;";
 	const char* q = query.c_str();
 	int qstate = mysql_query(conn, q);
 	if (!qstate) {
@@ -81,13 +113,17 @@ string Member_DB::updateMemberPrompt() {
 	int len = this->column_names.size();
 	for (int i = 0; i < len;i++) {
 		string new_val,upper;
-		cout << "Update " + column_names[i] + " ? (Enter new value or n to continue)" << endl;
+		cout << "Update " + column_names[i] + " ? (Enter new value or n to continue or q to quit)" << endl;
 		cin >> new_val;
 		removeSpaces(new_val);
 		for (string::iterator it = new_val.begin(); it != new_val.end(); it++) {
 			upper += toupper(*it);
 		}
-		if (upper!="N"&&upper!="NO") {
+		if (upper == "Q") {
+			if(result.length()>0) return result;
+			else break;
+		}
+		if (upper!="N") {
 			if (result.length() > 0) {
 				result += ",";
 			}
@@ -110,10 +146,9 @@ void Member_DB::updateMember() {
 	char gender;
 	
 	string update_attrs = updateMemberPrompt();
-	char buff[300];
+	char buff[1000];
 	const char* attrs_cstr = update_attrs.c_str();
 	sprintf_s(buff, "UPDATE gym_member SET %s WHERE MEMBER_ID =  %d", attrs_cstr, qid);
-	cout << buff << endl;
 	qstate = mysql_query(conn, buff);
 	if (!qstate) {
 		res = mysql_store_result(conn);
@@ -143,5 +178,14 @@ void Member_DB::showMembers() {
 	}
 	printSep(4);
 
+}
+
+void Member_DB::deleteMem() {
+	int id;
+	char buff[400];
+	cout << "Enter the id to delete\n" << endl;
+	cin >> id;
+	sprintf_s(buff, "DELETE FROM gym_member WHERE member_id =%d;", id);
+	MYSQL_QUERY(this->conn, buff);
 }
 

@@ -17,11 +17,11 @@ class Employee_DB{
 private:
 	MYSQL* conn;
 
-	
-	///*  Names of all columns in employee table in printable format   */
-	//array<string, 3> column_names {"First Name", "Last Name","Salary"};
-	///*  True column names of member table    */
-	//array<string, 3> column_names_db {"first_name","last_name","salary" };
+	/*  names of all columns in employee table in printable format   */
+	int columns = 4;
+	string column_names[4] = {"ID","First name", "Last name","Salary"};
+	/*  true column names of member table    */
+	string db_col_names[4] = { "emp_id","first_name","last_name","salary" };
 	
 	
 public:
@@ -35,7 +35,7 @@ public:
 		displays employee db related options
 	*/
 
-	void show_ops();
+	void showOps();
 
 	/*
 	shows all employees
@@ -44,8 +44,7 @@ public:
 	void showEmployees();
 
 	/*
-	Prompts use to add employee
-
+	Prompts user to add employee
 	*/
 	void addEmployee();
 
@@ -63,6 +62,11 @@ public:
 	*/
 	
 	string  mostValuableEmp();
+
+	/*
+		
+	*/
+	void deleteEmp();
 };
 
 #endif

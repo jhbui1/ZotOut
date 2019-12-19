@@ -6,7 +6,7 @@
 #include <mysql.h>
 #include <array>
 #include <string>
-
+#include "employee.h"
 
 
 using namespace std;
@@ -39,6 +39,13 @@ public:
 		@param conn, a mysql connection maintained by a DB manager object
 	*/
 	Member_DB(MYSQL* conn);
+	
+	/*
+		Prints available operations
+	*/
+
+	void showOps(Employee_DB& emp_db);
+
 	/*
 		Finds last row of member table.
 	*/
@@ -62,6 +69,11 @@ public:
 	*/
 
 	void showMembers();
+
+	/*
+		prompt for id and delete corresponding member
+	*/
+	void deleteMem();
 
 };
 

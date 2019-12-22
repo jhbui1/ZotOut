@@ -19,7 +19,6 @@ int main(int argc, char** argv) {
 	for (;;) {
 		cout << "Welcome to Zotout!" << endl;
 		cout << "\t1:Member Options:" << endl;
-		
 		cout << "\t2:Employee Options" << endl;
 		cout << "Enter the number for your option: " << endl;
 

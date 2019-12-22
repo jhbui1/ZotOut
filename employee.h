@@ -2,6 +2,7 @@
 #define EMPLOYEE_H
 
 #include <string>
+#include <vector>
 #include <mysql.h>
 
 
@@ -61,7 +62,7 @@ public:
 	
 	*/
 	
-	string  mostValuableEmp();
+	vector<string>  mostValuableEmp();
 
 	/*
 		

@@ -47,7 +47,7 @@ public:
 	void showOps(Employee_DB& emp_db);
 
 	/*
-		Finds last row of member table.
+		Used for finding id of most recently inserted member 
 	*/
 
 	int lastRow();
@@ -74,6 +74,11 @@ public:
 		prompt for id and delete corresponding member
 	*/
 	void deleteMem();
+
+	/*
+		adds entry to member_checkin table for member
+	*/
+	void checkIn();
 
 };
 

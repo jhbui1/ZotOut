@@ -24,6 +24,12 @@ Member_DB::Member_DB(MYSQL* conn){
 							email VARCHAR(40) NULL,\
 							rn_date DATE NOT NULL,\
 							sex ENUM('M','F') NOT NULL);");
+	mysql_query(this->conn, "CREATE TABLE IF NOT EXISTS member_checkin(\
+							member_id INT UNSIGNED NOT NULL,\
+							check_in DATETIME NOT NULL,\
+							FOREIGN KEY(member_id) REFERENCES gym_member(member_id),\
+							PRIMARY KEY(member_id)); ");
+	cout << "emp constructed" << endl;
 }
 
 void Member_DB::showOps(Employee_DB& emp_db) {
@@ -31,6 +37,7 @@ void Member_DB::showOps(Employee_DB& emp_db) {
 	cout << "\t2:Update/View Member file" << endl;
 	cout << "\t3:Show All Members" << endl;
 	cout << "\t4:Delete Member" << endl;
+	cout << "\t5:Checkin Member" << endl;
 	cout << "Enter the number for your option: " << endl;
 
 	int n,new_id = -1;
@@ -50,6 +57,11 @@ void Member_DB::showOps(Employee_DB& emp_db) {
 		case 4:
 			this->deleteMem();
 			break;
+		case 5:
+			this->checkIn();
+			break;
+
+
 
 	}
 }
@@ -164,8 +176,7 @@ void Member_DB::showMembers() {
 	MYSQL_RES* res;
 	MYSQL_ROW row;
 	string query ="SELECT * FROM gym_member"; 
-	const char* q = query.c_str();
-	int qstate = mysql_query(conn, q);
+	int qstate = mysql_query(this->conn, query.c_str());
 	if (!qstate) {
 		res = mysql_store_result(conn);
 		while (row = mysql_fetch_row(res))
@@ -187,5 +198,16 @@ void Member_DB::deleteMem() {
 	cin >> id;
 	sprintf_s(buff, "DELETE FROM gym_member WHERE member_id =%d;", id);
 	MYSQL_QUERY(this->conn, buff);
+}
+
+void Member_DB::checkIn() {
+	int mem_id;
+	cout << "Enter member id:" << endl;
+	cin >> mem_id;
+	string query = "INSERT INTO member_checkin (member_id,check_in) VALUES (";
+	query += to_string(mem_id);
+	query += " ,NOW());";
+	MYSQL_QUERY(this->conn, query);
+
 }
 

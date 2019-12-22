@@ -8,22 +8,28 @@
 
 using namespace std;
 
-Employee_DB::Employee_DB(MYSQL* conn) {
-	this->conn = conn;
+Employee_DB::Employee_DB(MYSQL* conn):conn(conn) {
 	mysql_query(this->conn, "CREATE TABLE IF NOT EXISTS employees( \
 							emp_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,\
 							first_name VARCHAR(30) NOT NULL,\
 							last_name VARCHAR(30) NOT NULL,\
 							salary DECIMAL(13,2) NOT NULL);");
 
-	mysql_query(this->conn, "DROP TABLE IF EXISTS employee_member\
-							CREATE TABLE IF NOT EXISTS employee_member( \
+	mysql_query(this->conn, "CREATE TABLE IF NOT EXISTS employee_member(\
 							emp_id INT UNSIGNED NOT NULL,\
-							member_id INT UNSIGNED NOT NULL\
-							FOREIGN KEY emp_id REFERENCES employees(emp_id)\
-							FOREIGN KEY member_id REFERENCES member(member_id)\
-							PRIMARY KEY member_id);");
+							member_id INT UNSIGNED UNIQUE NOT NULL,\
+							FOREIGN KEY(emp_id) REFERENCES employees(emp_id),\
+							FOREIGN KEY(member_id) REFERENCES gym_member(member_id),\
+							PRIMARY KEY(emp_id, member_id));");
+	cout << "mem constructed" << endl;
 
+}
+
+void printMVP(vector<string> result) {
+	cout << "Most valuable employees" << endl;
+	for (int i = 0; i < result.size(); i++) {
+		cout << result[i]<<endl;
+	}
 }
 
 void Employee_DB::showOps() {
@@ -31,6 +37,7 @@ void Employee_DB::showOps() {
 	cout << "\t1: Add Employee" << endl;
 	cout << "\t2: Show Employees" << endl;
 	cout << "\t3: Delete Employees" << endl;
+	cout << "\t4: Show Emp of the Month" << endl;
 	cin >> n;
 	switch (n) {
 		case 1:
@@ -42,6 +49,11 @@ void Employee_DB::showOps() {
 		case 3:
 			this->deleteEmp();
 			break; 
+		case 4:
+			vector<string> result = this->mostValuableEmp();
+			printMVP(result);
+			break;
+			
 	}
 
 
@@ -98,13 +110,8 @@ void Employee_DB::addMemEmp(int mem_id) {
 	
 	cout << "Enter your employee id:" << endl;
 	cin >> e_id;
-	sprintf_s(buff, "SELECT * FROM employees where emp_id = %d", e_id);
-	/*while (mysql_num_rows(MYSQL_QUERY(this->conn, buff)) == 0) {
-		cout << "Enter your employee id:" << endl;
-		cin >> e_id;
-		sprintf_s(buff, "SELECT * FROM employees where emp_id = %d", e_id);
-	}*/
-	sprintf_s(buff, "INSERT INTO employee_member VALUE('%d', '%d');",e_id,mem_id);
+	sprintf_s(buff, "INSERT INTO employee_member (emp_id,member_id) VALUE('%d', '%d'); ",e_id, mem_id);
+
 	res= MYSQL_QUERY(this->conn, buff);
 	
 }
@@ -119,7 +126,39 @@ void Employee_DB::deleteEmp() {
 	MYSQL_QUERY(this->conn, buff);
 }
 
-string Employee_DB::mostValuableEmp() {
 
+vector<string> Employee_DB::mostValuableEmp() {
+	string query = "SELECT first_name, last_name, count(*)\
+					FROM employee_member NATURAL JOIN employees \
+					GROUP BY emp_id\
+					ORDER BY 3\
+					";
+	MYSQL_RES* res;
+	MYSQL_ROW row;
+	vector<string> r;
+	string result ="";
+	res = MYSQL_QUERY(this->conn, query);
+	int mvp_count=-1;
+	//Handle tie in amount of members registered 
+	while (row = mysql_fetch_row(res)) {
+		int registered = stoi(row[2]);
+		cout << registered << " " << row[0] << endl;
+		if (registered < mvp_count) {
+			break;
+		}else {
+			//Add name to result
+			result += row[0];
+			result += " ";
+			result += row[1];
+			r.push_back(result);
+			result = "";
+
+			if (registered > mvp_count ) {
+				//Update mvp count to compare next counts to
+				mvp_count = registered;
+			}
+		}
+	}
+	return r;
 }
 

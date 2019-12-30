@@ -20,6 +20,7 @@ private:
 
 	/*  names of all columns in employee table in printable format   */
 	int columns = 4;
+	int field_widths[4] = { 10,30,30,15 };
 	string column_names[4] = {"ID","First name", "Last name","Salary"};
 	/*  true column names of member table    */
 	string db_col_names[4] = { "emp_id","first_name","last_name","salary" };
@@ -62,7 +63,7 @@ public:
 	
 	*/
 	
-	vector<string>  mostValuableEmp();
+	void  mostValuableEmp();
 
 	/*
 		

@@ -50,8 +50,8 @@ void Employee_DB::showOps() {
 			this->deleteEmp();
 			break; 
 		case 4:
-			vector<string> result = this->mostValuableEmp();
-			printMVP(result);
+			this->mostValuableEmp();
+			
 			break;
 			
 	}
@@ -62,11 +62,12 @@ void Employee_DB::showOps() {
 void Employee_DB::showEmployees() {
 	MYSQL_RES* res;
 	MYSQL_ROW row;
+	MYSQL_FIELD* fields;
 	string query = "SELECT emp_id,first_name,last_name,FORMAT(salary,2) FROM employees";
 	res = MYSQL_QUERY(this->conn, query);
-
-	
-	printf("%*s | %*s | %*s | %*s\n", 10, column_names[0], 30, column_names[1], 30, column_names[2], 15, column_names[3]);
+	int num_fields = mysql_num_fields(res);
+	fields = mysql_fetch_fields(res);
+	printFields(num_fields, fields, this->field_widths);
 
 	while (row = mysql_fetch_row(res))
 	{
@@ -82,10 +83,8 @@ void Employee_DB::showEmployees() {
 
 
 void addEmployeePrompt(string* fn,string* ln, double* salary) {
-	cout << "Enter first name:" << endl;
-	cin >> *fn;
-	cout << "Enter last name:" << endl;
-	cin >> *ln;
+	*fn = fieldLen(30, "first name");
+	*ln = fieldLen(30, "last name");
 	cout << "Enter salary: " << endl;
 	cin >> *salary;
 
@@ -127,7 +126,7 @@ void Employee_DB::deleteEmp() {
 }
 
 
-vector<string> Employee_DB::mostValuableEmp() {
+void Employee_DB::mostValuableEmp() {
 	string query = "SELECT first_name, last_name, count(*)\
 					FROM employee_member NATURAL JOIN employees \
 					GROUP BY emp_id\
@@ -159,6 +158,6 @@ vector<string> Employee_DB::mostValuableEmp() {
 			}
 		}
 	}
-	return r;
+	printMVP(r);
 }
 

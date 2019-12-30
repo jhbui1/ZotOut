@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm> 
 #include <mysql.h>
+#include <iomanip>
 
 #include "helpers.h"
 
@@ -32,5 +33,25 @@ MYSQL_RES* MYSQL_QUERY(MYSQL* conn,string s) {
 	}
 }
 
+void printFields(int num_fields, MYSQL_FIELD* fields,int* field_widths) {
+	for (int i = 0; i < num_fields; i++) {
+		cout <<setw(field_widths[i])<< fields[i].name << " | ";
+	}
+	cout << endl;
+}
+
+string fieldLen(int len, string field) {
+	string s;
+	while (1) {
+		cout << "Enter " << field << endl;
+		cin >> s;
+		if (s.length() <= len) {
+			return s;
+		}
+		else {
+			cout << "Entry should be less than " << len << " characters. Please try again." << endl;
+		}
+	}
+}
 
 

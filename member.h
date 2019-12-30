@@ -80,6 +80,10 @@ public:
 	*/
 	void checkIn();
 
+	/*
+		Finds member with most checkins 
+	*/
+	void mostFrequentMember();
 };
 
 

@@ -26,4 +26,7 @@ string removeSpaces(string str);
 
 MYSQL_RES* MYSQL_QUERY(MYSQL* conn, string s);
 
+void printFields(int num_fields, MYSQL_FIELD* fields,int* field_widths);
+
+string fieldLen(int len, string field);
 #endif

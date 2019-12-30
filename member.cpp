@@ -29,7 +29,6 @@ Member_DB::Member_DB(MYSQL* conn){
 							check_in DATETIME NOT NULL,\
 							FOREIGN KEY(member_id) REFERENCES gym_member(member_id),\
 							PRIMARY KEY(member_id)); ");
-	cout << "emp constructed" << endl;
 }
 
 void Member_DB::showOps(Employee_DB& emp_db) {
@@ -38,6 +37,7 @@ void Member_DB::showOps(Employee_DB& emp_db) {
 	cout << "\t3:Show All Members" << endl;
 	cout << "\t4:Delete Member" << endl;
 	cout << "\t5:Checkin Member" << endl;
+	cout << "\t6:Frequent Member" << endl;
 	cout << "Enter the number for your option: " << endl;
 
 	int n,new_id = -1;
@@ -60,9 +60,9 @@ void Member_DB::showOps(Employee_DB& emp_db) {
 		case 5:
 			this->checkIn();
 			break;
-
-
-
+		case 6:
+			this->mostFrequentMember();
+			break;
 	}
 }
 
@@ -211,3 +211,17 @@ void Member_DB::checkIn() {
 
 }
 
+void Member_DB::mostFrequentMember() {
+	string query = "SELECT first_name, last_name, count(*)\
+					FROM gym_member NATURAL JOIN member_checkin\
+					GROUP BY member_id\
+					ORDER BY 3\
+					";
+	MYSQL_RES* res;
+	MYSQL_ROW row;
+	res = MYSQL_QUERY(this->conn, query);
+	if (row = mysql_fetch_row(res)) {
+		cout << row[0] << " " << row[1] << endl;
+	}
+	
+}

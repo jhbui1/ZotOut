@@ -22,6 +22,7 @@ class Member_DB{
 private:
 	MYSQL* conn;
 	/*  Names of all columns in member table in printable format   */
+	int col_widths[5] = { 30,30,30,10,1 };
 	array<string,5> column_names{"First name", "Last name", "E-mail","Renewal date", "Gender"};
 	/*  True column names of member table    */
 	array<string,5> column_names_db{ "first_name","last_name","email","rn_date","sex" };

@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <array>
 #include <ctype.h>
+
 #include "member.h"
 #include "helpers.h"
 
@@ -41,7 +42,7 @@ void Member_DB::showOps(Employee_DB& emp_db) {
 	cout << "Enter the number for your option: " << endl;
 
 	int n,new_id = -1;
-	cin >> n;
+	CIN(n);
 	switch (n) {
 		case 1:	
 			new_id = this->insertMember();
@@ -71,16 +72,17 @@ void Member_DB::showOps(Employee_DB& emp_db) {
 */
 
 void insertMemberPrompt(string* fn,string *ln,string * email, string* date, char* gender) {
+	
 	cout << "Enter first name:" << endl;
-	cin >> *fn;
+	fieldLen(30,*fn);
 	cout << "Enter last name:" << endl;
-	cin >> *ln;
+	fieldLen(30,*ln);
 	cout << "Enter email: " << endl;
-	cin >> *email;
+	fieldLen(30, *email);
 	cout << "Enter date(YYYY-MM-DD): " << endl;
-	cin >> *date;
+	fieldLen(10, *date);
 	cout << "Enter gender: " << endl;
-	cin >> *gender;
+	CIN(*gender);
 
 }
 
@@ -125,17 +127,17 @@ string Member_DB::updateMemberPrompt() {
 	int len = this->column_names.size();
 	for (int i = 0; i < len;i++) {
 		string new_val,upper;
-		cout << "Update " + column_names[i] + " ? (Enter new value or n to continue or q to quit)" << endl;
-		cin >> new_val;
+		cout << "Update " + column_names[i] + " ? (Enter new value, n to continue to next value or q to quit)" << endl;
+		fieldLen(this->col_widths[i], column_names[i]);
 		removeSpaces(new_val);
 		for (string::iterator it = new_val.begin(); it != new_val.end(); it++) {
 			upper += toupper(*it);
 		}
-		if (upper == "Q") {
+		if (upper == "Q") {//handle quit
 			if(result.length()>0) return result;
 			else break;
 		}
-		if (upper!="N") {
+		else if (upper!="N") {//if n, continues
 			if (result.length() > 0) {
 				result += ",";
 			}
@@ -153,9 +155,7 @@ void Member_DB::updateMember() {
 
 	cout << "Enter member ID:" << endl;
 
-	cin >> qid; if(cin.fail());
-	string s[4];
-	char gender;
+	CIN(qid);
 	
 	string update_attrs = updateMemberPrompt();
 	char buff[1000];
@@ -195,7 +195,7 @@ void Member_DB::deleteMem() {
 	int id;
 	char buff[400];
 	cout << "Enter the id to delete\n" << endl;
-	cin >> id;
+	CIN(id);
 	sprintf_s(buff, "DELETE FROM gym_member WHERE member_id =%d;", id);
 	MYSQL_QUERY(this->conn, buff);
 }
@@ -203,7 +203,7 @@ void Member_DB::deleteMem() {
 void Member_DB::checkIn() {
 	int mem_id;
 	cout << "Enter member id:" << endl;
-	cin >> mem_id;
+	CIN(mem_id);
 	string query = "INSERT INTO member_checkin (member_id,check_in) VALUES (";
 	query += to_string(mem_id);
 	query += " ,NOW());";

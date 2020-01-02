@@ -17,10 +17,9 @@ class Employee_DB{
 
 private:
 	MYSQL* conn;
-
+	Login login_mgr;
 	/*  names of all columns in employee table in printable format   */
-	int columns = 4;
-	int field_widths[4] = { 10,30,30,15 };
+	int field_widths[6] = { 10,30,30,15,30,30 };
 	string column_names[4] = {"ID","First name", "Last name","Salary"};
 	/*  true column names of member table    */
 	string db_col_names[4] = { "emp_id","first_name","last_name","salary" };
@@ -31,7 +30,6 @@ public:
 	@param conn, a mysql connection maintained by a DB manager object
 	*/
 	Employee_DB(MYSQL* conn);
-
 
 	/*
 		displays employee db related options
@@ -66,7 +64,7 @@ public:
 	void  mostValuableEmp();
 
 	/*
-		
+		Deletes emp with given id
 	*/
 	void deleteEmp();
 };

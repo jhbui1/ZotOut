@@ -10,14 +10,20 @@
 #include "member.h"
 #include "employee.h"
 #include "equipment.h"
+#include "login.h"
 
 using namespace	std;
 
 int main(int argc, char** argv) {
+
+
+	
+	
 	DB_MANAGER db_man;
 	Member_DB mem_db(db_man.conn);
 	Employee_DB emp_db(db_man.conn);
 	Equipment_DB eq_db(db_man.conn);
+	Login login_mgr(db_man.conn);
 	for (;;) {
 		cout << "Welcome to Zotout!" << endl;
 		cout << "\t1:Member Options:" << endl;
@@ -26,10 +32,10 @@ int main(int argc, char** argv) {
 		cout << "Enter the number for your option: " << endl;
 
 		
-		int n,new_id=-1;
-		cin >> n;
+		int choice;
+		CIN(choice);
 		
-		switch (n) {
+		switch (choice) {
 		case 1:
 			mem_db.showOps(emp_db);
 			break;

@@ -2,6 +2,7 @@
 #include <algorithm> 
 #include <mysql.h>
 #include <iomanip>
+#include <locale>
 
 #include "helpers.h"
 
@@ -15,6 +16,21 @@ void printSep(int n){
 string removeSpaces(string str){
 	str.erase(remove_if(str.begin(), str.end(), isspace), str.end());
 	return str;
+}
+
+void MYSQL_STMT_INIT(MYSQL* conn, MYSQL_STMT* stmt, string s, int slen) {
+	stmt = mysql_stmt_init(conn);
+	if (!stmt)
+	{
+		fprintf(stderr, " mysql_stmt_init(), out of memory\n");
+		exit(0);
+	}
+	if (mysql_stmt_prepare(stmt, s.c_str(), slen))
+	{
+		fprintf(stderr, " mysql_stmt_prepare(), INSERT failed\n");
+		fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+		exit(0);
+	}
 }
 
 MYSQL_RES* MYSQL_QUERY(MYSQL* conn,string s) {
@@ -44,7 +60,9 @@ string fieldLen(int len, string field) {
 	string s;
 	while (1) {
 		cout << "Enter " << field << endl;
-		cin >> s;
+		getline(cin, s);
+		cin.clear();
+		cin.ignore(1000000, '\n');
 		if (s.length() <= len) {
 			return s;
 		}
@@ -54,4 +72,19 @@ string fieldLen(int len, string field) {
 	}
 }
 
+void lower(string& target){
+	transform(target.begin(),target.end(), target.begin(),
+		[](unsigned char c) { return tolower(c); });
+
+}
+
+void bind_var(MYSQL_BIND* bind, enum_field_types type, void* buffer, bool* isnull, unsigned long len, bool num_type) {
+	bind->buffer_type = type;
+	bind->buffer = buffer;
+	bind->is_null = isnull;
+	if (!num_type) {
+		bind->buffer_length = len;
+	}
+
+}
 

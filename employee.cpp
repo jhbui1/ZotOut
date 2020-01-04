@@ -14,11 +14,11 @@ Employee_DB::Employee_DB(MYSQL* conn):conn(conn) {
 							emp_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,\
 							first_name VARCHAR(30) NOT NULL,\
 							last_name VARCHAR(30) NOT NULL,\
-							salary DECIMAL(13,2) NOT NULL,\
-							user_name VARCHAR(30) NOT NULL,\
-							pwd VARCHAR(30) NOT NULL,\
+							salary DOUBLE NOT NULL,\
+							user_name VARCHAR(30) NOT NULL UNIQUE,\
+							pwd VARCHAR(100) NOT NULL,\
 							lvl ENUM('associate','manager'),\
-							salt VARCHAR(60) NOT NULL);");
+							plain VARCHAR(60) NOT NULL);");
 
 	mysql_query(this->conn, "CREATE TABLE IF NOT EXISTS employee_member(\
 							emp_id INT UNSIGNED NOT NULL,\
@@ -85,82 +85,43 @@ void Employee_DB::showEmployees() {
 
 }
 
-void bind_var(MYSQL_BIND* bind, enum_field_types type, void* buffer, bool* isnull, unsigned long len,bool num_type) {
-	bind->buffer_type = type;
-	bind->buffer = buffer;
-	bind->is_null = isnull;
-	if (!num_type) {
-		bind->buffer_length = len;
-	}
-	
-}
+
 
 void Employee_DB::addEmployee() {
-	MYSQL_STMT* stmt;
+	MYSQL_STMT* stmt=NULL;
 	MYSQL_BIND  bind[7];
-	
-	//bind[0].buffer_type = MYSQL_TYPE_LONG;
-	//bind[0].buffer = (char *)&int_data;
-	//bind[0].is_null = 0;
-	//bind[0].length = 0;
-
-	///* STRING PARAM */
-	//bind[1].buffer_type = MYSQL_TYPE_STRING;
-	//bind[1].buffer = (char *)str_data;
-	//bind[1].buffer_length = STRING_SIZE;
-	//bind[1].is_null = 0;
-	//bind[1].length = &str_length;
-
-	///* SMALLINT PARAM */
-	//bind[2].buffer_type = MYSQL_TYPE_SHORT;
-	//bind[2].buffer = (char *)&small_data;
-	//bind[2].is_null = &is_null;
-	//bind[2].length = 0;
-
-	//Prompt for employee info
-	string fn,ln,uname,pwd,lvl,salt;
+	string fn, ln, uname, pwd, lvl, salt;
 	double salary;
-	char buff[200];
+	
+	//Prompt for employee info
 	fn = fieldLen(30, "first name");
 	ln = fieldLen(30, "last name");
 	cout << "Enter salary: " << endl;
 	CIN(salary);
 	uname = fieldLen(30, "username");
-	pwd=this->login_mgr.getPWD();
-	pwd = this->login_mgr.hashSalt(pwd);
-	lvl = fieldLen(10, "level");//TODO: verify that user has priveelege to enter elevated level
 
-	memset(bind,0,sizeof(bind));
+	string plain_pwd=this->login_mgr.getPWD(true);
+	pwd = this->login_mgr.hashSalt(plain_pwd);
 
-	string insert_query = "INSERT INTO employees(first_name, last_name, salary, user_name, pwd, lvl, salt) VALUE(?, ?, ?, ?, ?, ?, ?)";
-	bind[0].buffer_type = MYSQL_TYPE_STRING;
-	bind[0].buffer = (char *)fn.c_str();
-	bind[0].is_null = 0;
+	lvl = fieldLen(10, "level (associate or manager)");//TODO: verify that user has priveelege to enter elevated level
 
-	bind[1].buffer_type = MYSQL_TYPE_STRING;
-	bind[1].buffer = (char *)ln.c_str();
-	bind[1].is_null = 0;
-
-	bind[2].buffer_type = MYSQL_TYPE_DECIMAL;
-	bind[2].buffer = (char *)&salary;
-	bind[2].is_null = 0;
+	string insert_query = "INSERT INTO employees(first_name, last_name, salary, user_name, pwd, lvl,plain) VALUE(?, ?, ?, ?, ?, ?, ?)";
 	
-	bind[3].buffer_type = MYSQL_TYPE_STRING;
-	bind[3].buffer = (char *)uname.c_str();
-	bind[3].is_null = 0;
-	
-	bind[4].buffer_type = MYSQL_TYPE_STRING;
-	bind[4].buffer = (char *)pwd.c_str();
-	bind[4].is_null = 0;
+	MYSQL_STMT_INIT(this->conn, stmt, insert_query, insert_query.length());
 
-	bind[5].buffer_type = MYSQL_TYPE_STRING;
-	bind[4].buffer = (char *)lvl.c_str();
+	memset(bind, 0, sizeof(bind));
+	bind_var(&bind[0], MYSQL_TYPE_STRING, (char*)fn.c_str(), 0, fn.length(), 0);
+	bind_var(&bind[1], MYSQL_TYPE_STRING, (char*)ln.c_str(), 0, ln.length(), 0);
+	bind_var(&bind[2], MYSQL_TYPE_DOUBLE, (char*)&salary, 0, 0, 1);
+	bind_var(&bind[3], MYSQL_TYPE_STRING, (char*)uname.c_str(), 0, uname.length(), 0);
+	bind_var(&bind[4], MYSQL_TYPE_STRING, (char*)pwd.c_str(), 0, pwd.length(), 0);
+	bind_var(&bind[5], MYSQL_TYPE_STRING, (char*)lvl.c_str(), 0, lvl.length(), 0);
+	bind_var(&bind[6], MYSQL_TYPE_STRING, (char*)plain_pwd.c_str(), 0, plain_pwd.length(), 0);
+
+
+	MYSQL_STMT_BIND_EXEC(stmt, bind);
 	
-	bind[6].buffer_type = MYSQL_TYPE_STRING;
-	bind[4].buffer = (char *)salt.c_str();
-	sprintf_s(buff, "INSERT INTO employees(first_name, last_name, salary,user_name,pwd,lvl,salt) VALUE('%s', '%s', '%.2f');",fn,ln,salary);
-	MYSQL_STMT_INIT(this->conn,stmt,insert_query,insert_query.length());
-	MYSQL_QUERY(this->conn, buff);
+	
 
 }
 

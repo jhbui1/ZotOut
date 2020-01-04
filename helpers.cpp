@@ -18,7 +18,7 @@ string removeSpaces(string str){
 	return str;
 }
 
-void MYSQL_STMT_INIT(MYSQL* conn, MYSQL_STMT* stmt, string s, int slen) {
+void MYSQL_STMT_INIT(MYSQL* conn, MYSQL_STMT*& stmt, string s, int slen) {
 	stmt = mysql_stmt_init(conn);
 	if (!stmt)
 	{
@@ -61,8 +61,8 @@ string fieldLen(int len, string field) {
 	while (1) {
 		cout << "Enter " << field << endl;
 		getline(cin, s);
-		cin.clear();
-		cin.ignore(1000000, '\n');
+		/*cin.clear();
+		cin.ignore(1000000, '\n');*/
 		if (s.length() <= len) {
 			return s;
 		}
@@ -85,6 +85,23 @@ void bind_var(MYSQL_BIND* bind, enum_field_types type, void* buffer, bool* isnul
 	if (!num_type) {
 		bind->buffer_length = len;
 	}
+	else {
+		bind->length = 0;
+	}
 
+}
+void MYSQL_STMT_BIND_EXEC(MYSQL_STMT* stmt,MYSQL_BIND* bind) {
+	if (mysql_stmt_bind_param(stmt, bind))
+	{
+		fprintf(stderr, " mysql_stmt_bind_param() failed\n");
+		fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+		exit(0);
+	}
+	if (mysql_stmt_execute(stmt))
+	{
+		fprintf(stderr, " mysql_stmt_execute(), 1 failed\n");
+		fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+		exit(0);
+	}
 }
 

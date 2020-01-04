@@ -9,7 +9,7 @@
 using namespace std;
 
 
-void MYSQL_STMT_INIT(MYSQL* conn, MYSQL_STMT* stmt, string s, int slen);
+void MYSQL_STMT_INIT(MYSQL* conn, MYSQL_STMT*& stmt, string s, int slen);
 
 /*
 	Provides error checking for a query
@@ -17,6 +17,18 @@ void MYSQL_STMT_INIT(MYSQL* conn, MYSQL_STMT* stmt, string s, int slen);
 */
 
 MYSQL_RES* MYSQL_QUERY(MYSQL* conn, string s);
+
+/*
+	Modular initialization of bind structures.
+*/
+
+void bind_var(MYSQL_BIND* bind, enum_field_types type, void* buffer, bool* isnull, unsigned long len, bool num_type);
+#endif
+
+/*
+	Error check for binding of buffers to parameters and execution
+*/
+void MYSQL_STMT_BIND_EXEC(MYSQL_STMT* stmt, MYSQL_BIND* bind);
 
 
 
@@ -69,5 +81,3 @@ void CIN(T& input) {
 	}
 }
 
-
-#endif

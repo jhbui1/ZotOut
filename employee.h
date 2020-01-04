@@ -5,6 +5,7 @@
 #include <vector>
 #include <mysql.h>
 
+#include "login.h"
 
 /*
 	Maintins tables for employee information and 
@@ -20,9 +21,6 @@ private:
 	Login login_mgr;
 	/*  names of all columns in employee table in printable format   */
 	int field_widths[6] = { 10,30,30,15,30,30 };
-	string column_names[4] = {"ID","First name", "Last name","Salary"};
-	/*  true column names of member table    */
-	string db_col_names[4] = { "emp_id","first_name","last_name","salary" };
 	
 	
 public:

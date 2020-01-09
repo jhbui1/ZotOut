@@ -22,18 +22,25 @@ Login::Login() {
 	;
 }
 
+string Login::getUserName() {
+	return this->user_name;
+}
+string Login::getPWD() {
+	return this->pwd;
+}
+string Login::getUserLevel() {
+	return this->user_level;
+}
+int Login::getID() {
+	return this->emp_id;
+}
+
 string Login::hashSalt(string pwd) {
 	string hash = BCrypt::generateHash(pwd);
 	return hash;
 
 }
 
-/*
-	Encrypts random number under hash of password
-*/
-string encrypt(int rand,string key) {
-
-}
 
 bool Login::validate() {
 	MYSQL_RES* res;
@@ -41,7 +48,7 @@ bool Login::validate() {
 
 	//Verify that username exists
 	string query = "SELECT * FROM employees WHERE user_name = '";
-	query += this->username;
+	query += this->user_name;
 	query += "';";
 	res = MYSQL_QUERY(this->conn, query);
 	if (mysql_num_rows(res)==0) {
@@ -51,11 +58,15 @@ bool Login::validate() {
 	else if (mysql_num_rows(res) > 1) {
 		cout << "Error: Duplicate user names contact sysadmin" << endl;
 	}
-
 	
+
+	//Validate pwd and set 
 	row = mysql_fetch_row(res);
 	string hash = row[5];
 	if (BCrypt::validatePassword(this->pwd,hash)) {
+		
+		this->emp_id = atoi(row[0]);
+		this->user_level = row[6];
 		return true;
 	}
 	else {
@@ -111,7 +122,7 @@ string Login::takeCredentials() {
 	string level;
 	while (true) {//While the entered credentials are invalid
 		cout << "Enter username: ";
-		CIN(this->username);
+		CIN(this->user_name);
 		//Separate function since input consumption is unique and must prevent over the shoulder attack.
 		this->pwd = getPWD(false);
 		if (this->validate()) {

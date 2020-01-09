@@ -9,7 +9,7 @@
 
 using namespace std;
 
-Employee_DB::Employee_DB(MYSQL* conn):conn(conn) {
+Employee_DB::Employee_DB(MYSQL* conn,Login login):conn(conn),login_mgr(login) {
 	mysql_query(this->conn, "CREATE TABLE IF NOT EXISTS employees( \
 							emp_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,\
 							first_name VARCHAR(30) NOT NULL,\
@@ -36,6 +36,16 @@ void printMVP(vector<string> result) {
 	}
 }
 
+bool Employee_DB::mgrCheck() {
+	if (this->login_mgr.getUserLevel() != "manager") {
+		cout << "Access denied. Manager permissions required." << endl;
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
 void Employee_DB::showOps() {
 	int n;
 	cout << "\t1: Add Employee" << endl;
@@ -45,13 +55,15 @@ void Employee_DB::showOps() {
 	CIN(n); 
 	switch (n) {
 		case 1:
-			this->addEmployee();
+			if(this->mgrCheck())
+				this->addEmployee();
 			break;
 		case 2:
 			this->showEmployees();
 			break;
 		case 3:
-			this->deleteEmp();
+			if (this->mgrCheck())
+				this->deleteEmp();
 			break; 
 		case 4:
 			this->mostValuableEmp();
@@ -132,8 +144,7 @@ void Employee_DB::addMemEmp(int mem_id) {
 	int e_id;
 	char buff[300];
 	
-	cout << "Enter your employee id:" << endl;
-	CIN(e_id);
+	e_id = this->login_mgr.getID();
 	sprintf_s(buff, "INSERT INTO employee_member (emp_id,member_id) VALUE('%d', '%d'); ",e_id, mem_id);
 
 	res= MYSQL_QUERY(this->conn, buff);

@@ -20,10 +20,11 @@ int main(int argc, char** argv) {
 	
 	
 	DB_MANAGER db_man;
-	Member_DB mem_db(db_man.conn);
-	Employee_DB emp_db(db_man.conn);
-	Equipment_DB eq_db(db_man.conn);
 	Login login_mgr(db_man.conn);
+	Member_DB mem_db(db_man.conn);
+	Employee_DB emp_db(db_man.conn,login_mgr);
+	Equipment_DB eq_db(db_man.conn);
+	
 	for (;;) {
 		cout << "Welcome to Zotout!" << endl;
 		cout << "\t1:Member Options:" << endl;

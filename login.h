@@ -11,32 +11,29 @@ using namespace std;
 class Login {
 private:
 	MYSQL* conn;
-
-	/*
-		Handles prompt for and validation of credentials
-		Returns level of the user
-	*/
-	string takeCredentials();
+	string user_name;
+	string pwd;
+	string user_level;
+	int emp_id;
 
 	/*
 		Prompts for pwd while preventing over the shoulder attack
 		Returns plain text password
 		Assumes terminal computer is separate for database server and password entered is to be sent wirelessly to server
 	*/
-	
+	string takeCredentials();
 
 	/*
-		Verifies that username exists and hashed pwd matches
-	
+		Verifies that username exists and hashed pwd matches	
 	*/
-
 	bool validate();
 public:
 
 	//Subject to change per session basis
-	string username;
-	string pwd;
-	string user_level;
+	string getUserName();
+	string getPWD();
+	string getUserLevel();
+	int getID();
 
 	Login(MYSQL* conn);
 

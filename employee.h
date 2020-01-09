@@ -27,16 +27,20 @@ public:
 	/*
 	@param conn, a mysql connection maintained by a DB manager object
 	*/
-	Employee_DB(MYSQL* conn);
+	Employee_DB(MYSQL* conn,Login login);
+
+	/*
+		Checks if current user has manager privilleges
+	*/
+	bool mgrCheck();
 
 	/*
 		displays employee db related options
 	*/
-
 	void showOps();
 
 	/*
-	shows all employees
+		shows all employees
 	*/
 
 	void showEmployees();

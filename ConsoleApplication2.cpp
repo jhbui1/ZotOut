@@ -4,6 +4,12 @@
 #include <stdlib.h>
 #include <mysql.h>
 #include <string>
+#include <jdbc/mysql_driver.h>
+#include <jdbc/mysql_connection.h>
+#include <jdbc/cppconn/statement.h>
+#include <jdbc/cppconn/build_config.h>
+#include <jdbc/cppconn/config.h>
+#include <jdbc/cppconn/connection.h>
 
 #include "db_man.h"
 #include "helpers.h"

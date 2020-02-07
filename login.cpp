@@ -15,12 +15,9 @@
 using namespace std;
 
 Login::Login(MYSQL* conn) :conn(conn) {
-	this->takeCredentials();
+	//this->takeCredentials();
 }
 
-Login::Login() {
-	;
-}
 
 string Login::getUserName() {
 	return this->user_name;

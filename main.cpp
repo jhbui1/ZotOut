@@ -7,6 +7,9 @@
 #include <iostream>
 #include <stdlib.h>
 #include <mysql.h>
+#include <jdbc/mysql_driver.h>
+#include <jdbc/mysql_connection.h>
+//#include <jdbc/cppconn/*.h/*>
 
 #include "helpers.h"
 #include "member.h"

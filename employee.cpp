@@ -55,14 +55,14 @@ void Employee_DB::showOps() {
 	CIN(n); 
 	switch (n) {
 		case 1:
-			if(this->mgrCheck())
+			//if(this->mgrCheck())
 				this->addEmployee();
 			break;
 		case 2:
 			this->showEmployees();
 			break;
 		case 3:
-			if (this->mgrCheck())
+			//if (this->mgrCheck())
 				this->deleteEmp();
 			break; 
 		case 4:

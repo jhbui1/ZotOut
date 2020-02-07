@@ -18,14 +18,14 @@ using namespace std;
 
 Member_DB::Member_DB(MYSQL* conn){
 	this->conn = conn;
-	mysql_query(this->conn, "CREATE TABLE IF NOT EXISTS gym_member( \
+	mysql_query(this->conn, "CREATE TABLE IF NOT EXISTS gym_member(\
 							member_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,\
 							first_name VARCHAR(30) NOT NULL,\
 							last_name VARCHAR(30) NOT NULL,\
 							email VARCHAR(40) NULL,\
 							rn_date DATE NOT NULL,\
 							sex ENUM('M','F') NOT NULL);");
-	mysql_query(this->conn, "CREATE TABLE IF NOT EXISTS member_checkin(\
+	MYSQL_QUERY(this->conn, "CREATE TABLE IF NOT EXISTS member_checkin(\
 							member_id INT UNSIGNED NOT NULL,\
 							check_in DATETIME NOT NULL,\
 							FOREIGN KEY(member_id) REFERENCES gym_member(member_id),\

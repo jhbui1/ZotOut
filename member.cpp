@@ -46,8 +46,10 @@ void Member_DB::showOps(Employee_DB& emp_db) {
 	switch (n) {
 		case 1:	
 			new_id = this->insertMember();
-			if (new_id == -1) break;
-			emp_db.addMemEmp(new_id);
+			if (new_id == -1) { //check if insertion failed
+				break;
+			}
+			emp_db.addMemEmp(new_id); //add relation between employee who added member
 			break;
 		case 2:
 			this->updateMember();
@@ -73,14 +75,10 @@ void Member_DB::showOps(Employee_DB& emp_db) {
 
 void insertMemberPrompt(string* fn,string *ln,string * email, string* date, char* gender) {
 	
-	cout << "Enter first name:" << endl;
-	fieldLen(30,*fn);
-	cout << "Enter last name:" << endl;
-	fieldLen(30,*ln);
-	cout << "Enter email: " << endl;
-	fieldLen(30, *email);
-	cout << "Enter date(YYYY-MM-DD): " << endl;
-	fieldLen(10, *date);
+	*fn = fieldLen(30,"First name:");
+	*ln = fieldLen(30,"Last name:");
+	*email = fieldLen(30, "Email:");
+	*date = fieldLen(10, "Date (YYYY-MM-DD):");
 	cout << "Enter gender: " << endl;
 	CIN(*gender);
 
@@ -114,9 +112,8 @@ int Member_DB::insertMember() {
 	char buff[300];
 
 	insertMemberPrompt(&fn, &ln, &email, &date, &gender);
-	
 	sprintf_s(buff, "INSERT INTO gym_member(first_name, last_name, email, rn_date, sex) VALUE('%s', '%s', '%s', '%s', '%c');", fn, ln, email, date, gender);
-	mysql_query(this->conn,buff);
+	if(!MYSQL_QUERY(this->conn,buff)) return -1;
 	this->showMembers();
 	return this->lastRow();
 }

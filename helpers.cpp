@@ -46,6 +46,7 @@ MYSQL_RES* MYSQL_QUERY(MYSQL* conn,string s) {
 	}
 	else {
 		cout << "Query failed: " << mysql_error(conn) << endl;
+		return NULL;
 	}
 }
 
@@ -88,16 +89,20 @@ void bind_var(MYSQL_BIND* bind, enum_field_types type, void* buffer, bool* isnul
 	}
 
 }
-void MYSQL_STMT_BIND_EXEC(MYSQL_STMT* stmt,MYSQL_BIND* bind) {
+bool MYSQL_STMT_BIND_EXEC(MYSQL_STMT* stmt,MYSQL_BIND* bind) {
 	if (mysql_stmt_bind_param(stmt, bind))
 	{
 		fprintf(stdout, " mysql_stmt_bind_param() failed\n");
 		fprintf(stdout, " %s\n", mysql_stmt_error(stmt));
+		return false;
 	}
+
 	if (mysql_stmt_execute(stmt))
 	{
 		fprintf(stdout, " mysql_stmt_execute(), 1 failed\n");
 		fprintf(stdout, " %s\n", mysql_stmt_error(stmt));
+		return false;
 	}
+	return true;
 }
 

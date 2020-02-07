@@ -5,7 +5,7 @@
 
 #include "helpers.h"
 #include "employee.h"
-#include "login.h" //getpwd
+#include "login.h"
 
 using namespace std;
 
@@ -55,14 +55,14 @@ void Employee_DB::showOps() {
 	CIN(n); 
 	switch (n) {
 		case 1:
-			//if(this->mgrCheck())
+			if(this->mgrCheck())
 				this->addEmployee();
 			break;
 		case 2:
 			this->showEmployees();
 			break;
 		case 3:
-			//if (this->mgrCheck())
+			if (this->mgrCheck())
 				this->deleteEmp();
 			break; 
 		case 4:
@@ -147,7 +147,8 @@ void Employee_DB::addMemEmp(int mem_id) {
 	e_id = this->login_mgr.getID();
 	sprintf_s(buff, "INSERT INTO employee_member (emp_id,member_id) VALUE('%d', '%d'); ",e_id, mem_id);
 
-	res= MYSQL_QUERY(this->conn, buff);
+	res = MYSQL_QUERY(this->conn, buff);
+
 	
 }
 
